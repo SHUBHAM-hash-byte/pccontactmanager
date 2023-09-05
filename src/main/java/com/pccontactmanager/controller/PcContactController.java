@@ -6,6 +6,7 @@ import com.pccontactmanager.entity.User;
 import com.pccontactmanager.helper.Message;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,8 @@ import javax.validation.Valid;
 @Controller
 public class PcContactController {
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
     @Autowired
   private UserRepo userRepo;
     @RequestMapping("/")
@@ -44,36 +47,6 @@ public class PcContactController {
         return "signup";
     }
 
-//    @RequestMapping(value = "/do_register",method = RequestMethod.POST)
-//    public String registerUser(@ModelAttribute("user") User user, @RequestParam(value = "agreement",defaultValue = "false")boolean agreement, Model model, HttpSession session)
-//    {
-//       try{
-//           if(!agreement)
-//           {
-//               System.out.println("please accept the terms and condition");
-//               throw  new Exception("please accept the terms and condition");
-//           }
-//           user.setRole("ROLE_USER");
-//           user.setEnabled(true);
-//
-//
-//           System.out.println(agreement);
-//           System.out.println(user);
-//           User save = this.userRepo.save(user);
-//
-//           model.addAttribute("user",save);
-//           model.addAttribute("user",new User());
-//           session.setAttribute("message",new Message("Successfully Registered " ,"alert-error"));
-//           return  "signup";
-//       }
-//      catch (Exception e){
-//           e.printStackTrace();
-//           model.addAttribute("user",user);
-//           session.setAttribute("message",new Message("Something went wrong" + e.getMessage(),"alert-error"));
-//          return "signup";
-//      }
-//
-//    }
 @RequestMapping(value = "/do_register", method = RequestMethod.POST)
 public String registerUser(@Valid @ModelAttribute("user") User user,BindingResult bindingResult, @RequestParam(value = "agreement", defaultValue = "false") boolean agreement, Model model, HttpSession session) {
     try {
@@ -89,6 +62,9 @@ public String registerUser(@Valid @ModelAttribute("user") User user,BindingResul
         }
         user.setRole("ROLE_USER");
         user.setEnabled(true);
+        user.setImage("default.png");
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
 
         System.out.println(agreement);
         System.out.println(user);
@@ -106,5 +82,6 @@ public String registerUser(@Valid @ModelAttribute("user") User user,BindingResul
         return "signup";
     }
 }
+
 
 }

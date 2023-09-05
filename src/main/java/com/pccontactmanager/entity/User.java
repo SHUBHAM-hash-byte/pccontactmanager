@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Stream;
 
 
 @Entity
@@ -131,4 +131,7 @@ public class User {
     public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
     }
+
+
+
 }
